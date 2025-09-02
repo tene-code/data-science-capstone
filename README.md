@@ -43,7 +43,7 @@ This capstone project demonstrates advanced methods through:
 
 ---
 
-## 🗂️ Repository Contents
+## Repository Contents
 
 - `topic.pdf` – Initial project write-up submitted to Prof. Hardin
 - `README.md` – You’re here!
@@ -74,7 +74,7 @@ This repository is under active development throughout Fall 2025.
 
 ---
 
-## 📜 License & Credits
+## License & Credits
 
 This curriculum is for educational use only.  
 Inspired by:  
