@@ -45,8 +45,9 @@ This capstone project demonstrates advanced methods through:
 
 ## Repository Contents
 
-- `topic.pdf` – Initial project write-up submitted to Prof. Hardin
+- `topic.pdf` – Initial project write-up
 - `README.md` – You’re here!
+- `annotated_bibliography.pdf` — Listing of the sources I used for core framing, implementation, and the datasets that I used
 
 ---
 
