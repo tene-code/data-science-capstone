@@ -48,7 +48,7 @@ This capstone project demonstrates advanced methods through:
 - `topic.pdf` – Initial project write-up
 - `README.md` – You’re here!
 - `annotated_bibliography.pdf` — Listing of the sources I used for core framing, implementation, and the datasets that I used
-- `outline.pdf` - A tentative outline of the titles of the major sections of my capstone project with a mini narrative explaining what is going to go in each section.
+- `1st outline.pdf` - A tentative outline of the titles of the major sections of my capstone project with a mini narrative explaining what is going to go in each section.
 
 ---
 
