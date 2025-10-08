@@ -1,0 +1,124 @@
+---
+title: "Lesson 1 — Formulate Statistical Investigative Questions"
+tutorial:
+  id: lesson-1-formulate
+  version: 1.0.0
+output:
+  learnr::tutorial:
+    progressive: false
+    allow_skip: false
+    theme: cerulean
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+library(learnr)
+library(shiny)
+library(ggplot2)
+library(dplyr)
+knitr::opts_chunk$set(echo = FALSE, message = FALSE, warning = FALSE)
+tutorial_options(exercise.checker = NULL)
+```
+
+```{r setup-server, context="server"}
+# Server-side context required by shiny_prerendered
+NULL
+```
+
+## Big Idea
+
+A **statistical investigative question** anticipates **variability** in data and can be answered with data you can **collect or consider**. We'll practice telling investigable questions from vague ones and make a first bar chart.
+
+## Learning objectives
+
+* Identify whether a question is statistical/investigable vs. vague/opinion.
+
+* Rewrite a vague question into an investigable one that anticipates variability.
+
+* Produce and label a basic bar chart from a tiny data set.
+
+* Reflect on fairness and bias in question wording and sampling (ethics micro-prompt).
+
+**Warm-up: What makes a statistical question?**
+
+A good statistical question expects **different answers** from different people or items. For example, “Which snack is most popular in our class?” is investigable; “What’s the best snack?” is an opinion.
+
+```{r quiz-warmup, echo=FALSE}
+quiz(
+  question("Which is *investigable with data*?",
+    answer("What’s the best candy?", correct = FALSE),
+    answer("Which candy is most popular in our class?", correct = TRUE),
+    answer("Is chocolate good?", correct = FALSE)
+  )
+)
+```
+
+---
+
+## Try it: Rewrite a vague question
+
+Rewrite this vague question to make it investigable: **“Do people read a lot?”**
+Type your revised question below. Then click Show a sample answer to compare.
+
+```{r rewrite-free, echo=FALSE}
+textInput("rewrite1", label = "Your investigable question:", placeholder = "e.g., What percent of 6th graders read 30+ minutes yesterday?")
+```
+
+Show a sample answer
+
+* “What percentage of students in our class read for at least 30 minutes yesterday?”
+
+* “What is the average number of minutes students in Grade 7 spent reading last weekend?”
+
+Why they work: both **define a measure**, a **group**, and **anticipate variability**.
+
+
+## First Plot (Bar Chart)
+
+Now let’s use a tiny toy dataset to practice a bar chart. Run the code, then try the prompts below.
+
+```{r first-plot, exercise=TRUE}
+candy <- data.frame(
+  student   = paste0("S", 1:5),
+  chocolate = c("yes", "no", "yes", "yes", "no"),
+  fruity    = c("yes", "yes", "no", "yes", "no")
+)
+
+# Try changing 'chocolate' to 'fruity' in aes(x = ...)
+ggplot(candy, aes(x = chocolate)) +
+  geom_bar() +
+  labs(title = "Candy preference (toy data)", x = "Response", y = "Count")
+```
+
+---
+
+## Ethics Micro-Prompt (2–3 sentences)
+
+Consider the question: “Which snack is most popular in our class?”
+If you only survey friends sitting near you, what bias might that introduce, and how could you reduce it? Write 2–3 sentences.
+
+```{r ethics-free, echo=FALSE}
+textAreaInput("ethics_txt", "If you only survey nearby friends, what bias might that introduce, and how could you reduce it?", rows = 4)
+```
+
+---
+
+## Exit Ticket
+
+1. Which prompt is **not** investigable?
+
+```{r quiz-exit, echo=FALSE}
+quiz(
+  question("Pick the *non-investigable* question:",
+    answer("Is pizza the best lunch?", correct = TRUE),
+    answer("What percent of students ate pizza for lunch today?", correct = FALSE),
+    answer("How many different lunches were brought today?", correct = FALSE)
+  )
+)
+```
+
+2. One sentence: how did you change a vague question to make it investigable?
+```{r}
+textAreaInput("exit_sentence", "Your sentence:", rows = 2, placeholder = "I defined a group, a time frame, and a measurable quantity that varies across students.")
+```
+
