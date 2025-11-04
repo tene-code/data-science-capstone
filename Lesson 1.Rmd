@@ -5,7 +5,7 @@ tutorial:
   version: 1.0.0
 output:
   learnr::tutorial:
-    progressive: false
+    progressive: true
     allow_skip: false
     theme: cerulean
 runtime: shiny_prerendered
@@ -25,32 +25,59 @@ tutorial_options(exercise.checker = NULL)
 NULL
 ```
 
+```{r}
+observeEvent(input$show_ans1, ignoreInit = TRUE, {
+updateTextInput(
+session,
+"rewrite1",
+value = "What percentage of students in our class read for at least 30 minutes yesterday?"
+)
+})
+
+observeEvent(input$clear_ans1, {
+updateTextInput(session, "rewrite1", value = "")
+})
+```
+
+
 ## Big Idea
 
-A **statistical investigative question** anticipates **variability** in data and can be answered with data you can **collect or consider**. We'll practice telling investigable questions from vague ones and make a first bar chart.
 
-## Learning objectives
+A **statistical investigative** question anticipates variability—that different people/items can yield different values—and can be answered with a measurable quantity you can collect (e.g., a count, percent, or average for a defined group and time).
 
-* Identify whether a question is statistical/investigable vs. vague/opinion.
+* **Variability**: natural differences in values across people/items or over time (e.g., minutes read, flavors chosen).
 
-* Rewrite a vague question into an investigable one that anticipates variability.
+* **Measurable quantity**: a clearly defined thing you can count/measure with a unit (e.g., “% of students who…” or “average minutes of…”).
+
+In this lesson, we’ll practice telling investigable questions from vague ones, and make our first bar chart.
+
+### Learning objectives
+
+* Tell whether a question is investigable by checking for a measurable quantity, a defined group/time, and expected variability.
+
+* Rewrite a vague question so it specifies what is measured (and unit), who it’s about, and when.
 
 * Produce and label a basic bar chart from a tiny data set.
 
-* Reflect on fairness and bias in question wording and sampling (ethics micro-prompt).
+* Reflect on fairness and bias (especially sampling bias) in question wording and sampling.Identify whether a question is statistical/investigable vs. vague/opinion.
+
 
 **Warm-up: What makes a statistical question?**
 
-A good statistical question expects **different answers** from different people or items. For example, “Which snack is most popular in our class?” is investigable; “What’s the best snack?” is an opinion.
+A good statistical question expects **different answers** and defines what we will measure. Some questions are subjective (“best”), but we can still study opinions statistically if we measure them (e.g., “What percent of students say chocolate is their favorite?”). For example, “Which snack is most popular in our class?” is investigable because we can count votes; “What’s the best snack?” is ambiguous unless we define how we’ll measure “best.”
 
 ```{r quiz-warmup, echo=FALSE}
 quiz(
   question("Which is *investigable with data*?",
-    answer("What’s the best candy?", correct = FALSE),
-    answer("Which candy is most popular in our class?", correct = TRUE),
-    answer("Is chocolate good?", correct = FALSE)
+    answer("What’s the best candy?", correct = FALSE, message = "This is an opinion question. 'Best' depends on personal taste. Data can’t prove one candy is best for everyone."),
+    answer("Which candy is most popular in our class?",correct = TRUE, message = "Nice! We can collect data by surveying classmates and counting votes."
+    ),
+    answer(
+      "Is chocolate good?", correct = FALSE, message = "This is too vague and subjective. 'Good' means different things to different people. We would need to make it measurable."),
+    allow_retry = TRUE
   )
 )
+
 ```
 
 ---
@@ -58,19 +85,30 @@ quiz(
 ## Try it: Rewrite a vague question
 
 Rewrite this vague question to make it investigable: **“Do people read a lot?”**
-Type your revised question below. Then click Show a sample answer to compare.
+Type your revised question below, then click "Show a sample answer" to compare.
 
-```{r rewrite-free, echo=FALSE}
-textInput("rewrite1", label = "Your investigable question:", placeholder = "e.g., What percent of 6th graders read 30+ minutes yesterday?")
+Use this frame if helpful: “What **percent/number** of **[group] [did X / chose Y]** in **[time frame]**?”
+
+```{r}
+textInput("rewrite1", label = "Your investigable question:")
+
+div(
+style = "margin-top: .5rem;",
+actionButton("show_ans1", "Show sample answer"),
+actionButton("clear_ans1", "Clear", class = "btn btn-link"))
+
+# Reveal panel when button toggled (odd clicks = visible)
+
+conditionalPanel(condition = "input.show_ans1 % 2 == 1",
+wellPanel(p("Examples:"),
+tags$ul(tags$li("What percentage of students in our class read for at least 30 minutes yesterday?"),
+tags$li("What is the average number of minutes students in Grade 7 spent reading last weekend?")
+),
+p(tags$em("Why they work:"), " both define a measure, a group, and anticipate variability.")
+)
+)
+
 ```
-
-Show a sample answer
-
-* “What percentage of students in our class read for at least 30 minutes yesterday?”
-
-* “What is the average number of minutes students in Grade 7 spent reading last weekend?”
-
-Why they work: both **define a measure**, a **group**, and **anticipate variability**.
 
 
 ## First Plot (Bar Chart)
@@ -78,27 +116,56 @@ Why they work: both **define a measure**, a **group**, and **anticipate variabil
 Now let’s use a tiny toy dataset to practice a bar chart. Run the code, then try the prompts below.
 
 ```{r first-plot, exercise=TRUE}
-candy <- data.frame(
-  student   = paste0("S", 1:5),
-  chocolate = c("yes", "no", "yes", "yes", "no"),
-  fruity    = c("yes", "yes", "no", "yes", "no")
+
+# Create a small candy dataset
+candy <- data.frame(chocolate = c("yes", "no", "yes", "yes", "no"), fruity = c("yes","yes","no","yes","no"))
+
+ggplot(candy, aes(x = chocolate)) +
+  geom_bar()
+```
+---
+
+**🔎 Challenge: Tinker with the bar chart and observe what changes.**  
+Do these one at a time (run after each edit):
+
+1. Switch `x = chocolate` to `x = fruity`. What changes in the bars?
+2. Compare variables: add `fill = chocolate` inside `aes(...)`.
+3. Show proportions instead of counts: set `position = "fill"` in `geom_bar(...)`.
+4. Optional polish: add `labs(title = "Candy prefs")` and `coord_flip()` at the end.
+
+
+
+## Check your understanding
+
+```{r quiz-question, echo=FALSE}
+quiz(
+question("If you switch x = chocolate to x = fruity *in this dataset*, what happens?",
+answer("We’re counting a different variable, but the yes/no counts happen to be the same here, so the bars look the same (only the x label changes).", correct = TRUE),
+answer("Nothing changes because ggplot ignores x.", correct = FALSE),
+answer("It becomes a line graph automatically.", correct = FALSE),
+allow_retry = TRUE
+),
+question("What makes chocoalte a *categorical* variable?",
+answer("It takes labels like 'yes'/'no' (not numbers).", correct = TRUE),
+answer("It’s measured in minutes.", correct = FALSE),
+allow_retry = TRUE
+)
 )
 
-# Try changing 'chocolate' to 'fruity' in aes(x = ...)
-ggplot(candy, aes(x = chocolate)) +
-  geom_bar() +
-  labs(title = "Candy preference (toy data)", x = "Response", y = "Count")
+
 ```
+
 
 ---
 
 ## Ethics Micro-Prompt (2–3 sentences)
 
 Consider the question: “Which snack is most popular in our class?”
-If you only survey friends sitting near you, what bias might that introduce, and how could you reduce it? Write 2–3 sentences.
+
+**Bias (quick definition)**: a systematic error in how we **sample** or **measure** that pushes results in one direction.
 
 ```{r ethics-free, echo=FALSE}
-textAreaInput("ethics_txt", "If you only survey nearby friends, what bias might that introduce, and how could you reduce it?", rows = 4)
+textAreaInput("ethics_txt", "If you only survey friends sitting near you, what sampling bias might that introduce, and how could you reduce it? Write 2–3 sentences.", rows = 4)
 ```
 
 ---
