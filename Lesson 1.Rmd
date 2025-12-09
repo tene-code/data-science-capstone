@@ -74,7 +74,8 @@ quiz(
     ),
     answer(
       "Is chocolate good?", correct = FALSE, message = "This is too vague and subjective. 'Good' means different things to different people. We would need to make it measurable."),
-    allow_retry = TRUE
+    allow_retry = TRUE,
+    random_answer_order = TRUE
   )
 )
 
@@ -148,7 +149,8 @@ allow_retry = TRUE
 question("What makes chocoalte a *categorical* variable?",
 answer("It takes labels like 'yes'/'no' (not numbers).", correct = TRUE),
 answer("It’s measured in minutes.", correct = FALSE),
-allow_retry = TRUE
+allow_retry = TRUE,
+random_answer_order = TRUE
 )
 )
 
@@ -179,7 +181,8 @@ quiz(
   question("Pick the *non-investigable* question:",
     answer("Is pizza the best lunch?", correct = TRUE),
     answer("What percent of students ate pizza for lunch today?", correct = FALSE),
-    answer("How many different lunches were brought today?", correct = FALSE)
+    answer("How many different lunches were brought today?", correct = FALSE),
+    random_answer_order = TRUE
   )
 )
 ```

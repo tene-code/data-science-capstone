@@ -1,0 +1,336 @@
+---
+title: "Lesson 2 — Collect & Consider Data"
+tutorial:
+  id: lesson-2-collect
+  version: 1.0.0
+output:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: false
+    theme: cerulean
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(dplyr)
+library(ggplot2)
+library(learnr)
+
+# 👉 This makes the dataset available without showing it.
+survey <- tibble(
+  student_id = 1:12,
+  grade = rep(7, 12),
+  minutes_read = c(20, 35, 3, 15, 40, 30, 10, 25, 5, 50, 15, 45),
+  device = c("PHONE", "Tablet", "phone", "Phone", "tablet", 
+             "other", "other", "Phone", "tablet", "other", 
+             "phone", "Tablet")
+)
+```
+
+## Collect & Consider Data  
+### *Where data comes from matters.*
+
+In Lesson 1, you learned how to ask a strong statistical question.  
+Now we focus on the **next step in the data investigation cycle**:
+
+> **How do we gather and prepare data so that our answers are trustworthy?**
+
+In this lesson you will:  
+- Learn what makes a good **sample**,  
+- Explore the idea of **variability**,  
+- Examine a real(istic) dataset collected from a class survey,  
+- Clean messy data,  
+- Sort/filter to focus on meaningful patterns, and  
+- Reflect on **fairness and bias** in how data is gathered.
+
+---
+
+## What Are We Actually Measuring?
+
+Before collecting data, we need to list our **variables**:
+
+- **What** did we measure?  
+- **Who** did we measure?  
+- **When** and **how** was the data collected?  
+- **Why** might the results vary?
+
+Here’s the kind of statistical question we’ll investigate today:
+
+> **“How many minutes do 7th graders spend reading on a school night?”**
+
+To answer this, we need to collect data from actual students.
+
+---
+
+## Understanding Our Dataset
+
+Below is a sample dataset like one a teacher might gather from a short in-class survey.  
+It has **12 students**, and each row represents one student.
+
+```{r show_data}
+survey
+```
+
+### Dataset Variables
+
+| Variable        | Meaning |
+|----------------|---------|
+| `student_id`    | an ID number for each student (not a name) |
+| `grade`         | grade level of each student |
+| `minutes_read`  | number of minutes the student read last night |
+| `device`        | device the student used the most yesterday |
+<br>
+Notice anything messy?  
+For example, look at the `device` column:  
+***Is “Phone” the same as “phone” and “PHONE”?***
+<br><br><br><br>
+***R Quick Reference***
+
+- `head(data)` — shows the first 6 rows of a dataset. When you work with really large datasets, it’s common to use `head(data)` so you only print the first few rows instead of the whole table. To see all 12 students here, you would print `survey`; to peek at just a few, you could use `head(survey)` or `head(survey, 6)`.
+
+```{r show_data1}
+head(survey)
+```
+
+---
+
+## Sampling: How We Collect Data
+
+A **population** is the entire group we care about (for example, all 7th graders at our school).  
+A **sample** is the smaller group we actually collect data from.  
+A **random sample** means every person in the population has an equal chance to be chosen.  
+<br>
+Different samples = different results → this is **variability**.
+
+```{r sampling_quiz, echo=FALSE}
+quiz(
+  question(
+    "Surveying only students who were in the library before school is…",
+    answer(
+      "A convenience sample",
+      correct = TRUE,
+      message = "We surveyed whoever was nearby, not a random group."),
+    answer(
+      "A random sample",
+      message = "Not quite — this group was chosen based on convenience, not randomness."),
+    allow_retry = TRUE, random_answer_order = TRUE),
+  question(
+    "Drawing 10 names from a hat containing everyone's name in 7th grade is…",
+    answer(
+      "A random sample",
+      correct = TRUE,
+      message = "Every student had an equal chance of being selected."),
+    answer(
+      "A convenience sample",
+      message = "Incorrect — this sample wasn’t chosen based on convenience."),
+    allow_retry = TRUE, random_answer_order = TRUE
+  )
+)
+```
+
+---
+
+## Variability: Why Will Answers Differ?
+
+Even if we ask the same question to many students, we expect their answers to **vary**.
+
+A variable like reading minutes might look like:
+
+- Some students read 0 minutes  
+- Some read 15–25 minutes  
+- Some read 40–50 minutes  
+
+This natural difference across students is called **variability**.
+
+### Check: What is the range of reading times in our dataset?
+
+```{r row_check, exercise=TRUE}
+# Type min(survey$minutes_read) and run it, then type max(survey$minutes_read) and run it below to find the smallest and largest values.
+```
+
+
+### Check: What is the range of reading times in our dataset?
+
+```{r range_quiz_numeric, echo=FALSE}
+quiz(
+  question_numeric(
+    "What is the range of reading times (max - min)?",
+    answer(47, correct = TRUE),
+    correct = "✅ Correct! The range is 47 minutes",
+    incorrect = "❌ Not quite. Remember: range = max − min.",
+    allow_retry = TRUE
+  )
+)
+```
+
+
+***R Quick Reference***
+
+- `min()` and `max()` — find the smallest and largest values in a column.
+
+- `survey$minutes_read` — the $ tells R to take the minutes_read column from the survey dataset.
+
+- `min(survey$minutes_read)` and `max(survey$minutes_read)` — use that column to get the smallest and largest reading times.
+
+---
+
+## Data Cleaning (Very Important!)
+
+Real data is often messy.  
+Our goal: **make the data consistent so our analysis is fair and accurate.**
+
+### Look at the device column:
+
+```{r view_dev}
+survey$device
+```
+
+Some values are `"phone"`, `"Phone"`, `"Tablet"`, `"tablet"`, etc.
+
+Our goal is to make them consistent.
+
+When you run the code below, we first look at the original `survey$device` values. Again, in R, the `$` symbol means “take this column from that dataset,” so `survey$device` means “the `device` column from the `survey` table.” Then we make a new copy called `survey_clean` so we can clean the device names without changing the original data. That’s why you’ll see two slightly different versions of the same column.
+
+
+---
+
+## Exercise: Clean the device column
+
+Run the following chunk:
+
+```{r clean_exercise, exercise=TRUE}
+survey_clean <- survey
+survey_clean$device <- tolower(survey_clean$device)
+
+head(survey_clean)
+```
+
+```{r sampling_quiz_2, echo=FALSE}
+quiz(
+  question("What did the cleaning change?",
+    answer("It made all device names lowercase.", correct = TRUE,
+           message = "Correct! 'Phone', 'phone', and 'PHONE' all became 'phone'."),
+    answer("It removed students who used phones.", message = "Not quite — nobody was removed."),
+    answer("It sorted the rows automatically.", message = "No — sorting happens separately."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+
+```
+
+
+***R Quick Reference***
+- `tolower()` — makes text lowercase  
+
+
+---
+
+## Sorting, Filtering, and Creating New Features
+
+Now let’s analyze the cleaned dataset
+
+The table below only shows the students who read more than 20 minutes, not all 12 students.
+
+```{r filter_demo}
+survey %>% 
+  mutate(device = tolower(device)) %>%
+  filter(minutes_read > 20)
+```
+
+```{r sampling_quiz_3, echo=FALSE}
+quiz(
+  question("How many students read more than 20 minutes?",
+    answer("3", message="Check the table again — look for students with more than 20."),
+    answer("6", correct=TRUE, message="Yes! These were the rows with minutes_read > 20."),
+    answer("12", message="That would mean everyone! Look again.")
+  )
+)
+```
+
+---
+
+### Sort: Who read the most?
+
+`arrange()` arranges survey_clean, and `desc()` puts it in descending order of minutes_read
+
+```{r sort_demo}
+survey %>% 
+  mutate(device = tolower(device)) %>%
+  arrange(desc(minutes_read))
+
+```
+
+```{r sort_quiz, echo=FALSE}
+quiz(
+  question("Who read the most minutes?",
+    answer("Student 10", correct = TRUE,
+           message = "Correct! They appear at the top after sorting, with 50 minutes."),
+    answer("Student 1", 
+           message = "Student 1 is not at the top once sorted."),
+    answer("All students read the same amount",
+           message = "The sorted data shows clear differences.")
+  )
+)
+```
+
+---
+
+### Create a new variable: “lots_of_reading”
+
+Let’s flag students who read **over 30 minutes** by creating a new column called lots_of_reading (TRUE/FALSE)
+
+```{r create_flag_demo}
+survey_flag <- survey %>%
+  mutate(lots_of_reading = minutes_read > 30)
+
+survey_flag
+```
+
+
+```{r create_flag_quiz, echo=FALSE}
+quiz(
+  question("What does TRUE mean in the lots_of_reading column?",
+    answer("The student read more than 30 minutes.", correct=TRUE,
+           message="Correct! That's how the new feature was created."),
+    answer("The student likes reading.",
+           message="Not necessarily — it's based only on minutes read."),
+    answer("The student used a phone to read.",
+           message="Device type is unrelated to this new column.")
+  )
+)
+```
+
+---
+
+## Ethics & Bias: Was Our Survey Fair?
+
+Recall from Lesson 1, **bias** is a systematic error in how we **sample** or **measure** that pushes results in one direction.
+
+Think about:
+
+- Did every student have an equal chance to be in the sample?  
+- Could the question wording pressure students to answer in a certain way?  
+- Could certain groups be underrepresented?
+
+Use the code box below as a writing space: you can type your answer as comments (lines that start with `#`). You don’t need to write actual R code here.
+
+```{r ethics_reflection, exercise=TRUE}
+# 👉 In 2–3 sentences:
+# How might the sample or the way we asked the question introduce bias?
+# How could we make the data collection more fair?
+```
+
+---
+
+## Exit Ticket
+
+Use this final code box as a place to write in sentences. Just like above, you can type your answers as comments (starting each line with #).
+
+```{r exit_ticket, exercise=TRUE}
+# 1. Give one example of wording bias.
+# 2. Give one example of sampling bias.
+# 3. What is one thing you learned about collecting data?
+```

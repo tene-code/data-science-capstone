@@ -1,0 +1,262 @@
+---
+title: "Lesson 3 — Analyze Patterns in Data"
+tutorial:
+  id: lesson-3-analyze
+  version: 1.0.0
+output:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: false
+    theme: cerulean
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(learnr)
+library(dplyr)
+library(ggplot2)
+
+# Same survey data used in Lesson 2
+set.seed(123)
+survey <- tibble(
+  student_id = 1:12,
+  grade = rep(7, 12),
+  minutes_read = c(20, 35, 3, 15, 40, 30, 10, 25, 5, 50, 15, 45),
+  device = c(
+    "phone", "tablet", "phone", "phone",
+    "tablet", "other", "other", "phone",
+    "tablet", "other", "phone", "tablet"
+  )
+)
+```
+
+## Welcome to Lesson 3 — Analyze Patterns
+
+In Lesson 1, you practiced writing **investigable questions**.  
+In Lesson 2, you looked closely at a small dataset and noticed **variability** in reading time.
+
+In Lesson 3, you will:
+
+- Make graphs that show patterns in our data.  
+- Compare groups (like `phone` vs `tablet` readers).  
+- Use those patterns to make short, data-based claims.
+
+---
+
+## Warm-up: What counts as a "pattern"?
+
+Imagine that your teacher says:
+
+> "I think students who use tablets tend to read for more minutes than students who use phones."
+
+That statement is a **claim about a pattern** in the data.
+
+### Quick Check
+
+```{r warmup-quiz, echo=FALSE}
+quiz(
+  question(
+    "Which of these is a claim you could reasonably check with our reading survey data?",
+    answer(
+      "In this sample, students who use tablets tend to read for more minutes than students who use phones.",
+      correct = TRUE,
+      message = "Yes! this compares minutes_read across device groups using the data we have, and it stays inside our sample."),
+    answer(
+      "From this sample, we can infer that tablets cause students to read more minutes than phones do.",
+      correct = FALSE,
+      message = "We only have an observational survey, so we can describe patterns but not prove what *causes* what."),
+    answer(
+      "This sample shows us that reading is important for success in life.",
+      correct = FALSE,
+      message = "This is an opinion/value judgment, not something that our tiny class survey can directly measure."),
+    allow_retry = TRUE
+  )
+)
+```
+
+---
+
+## Step 1: Look at the data again
+
+Here is the same `survey` dataset from Lesson 2.
+
+```{r show-data}
+survey
+```
+
+Each row is a student. Each column is a **variable**.  
+We want to see how `minutes_read` changes for different `device` types.
+
+---
+
+## Step 2: Make a graph to compare groups
+
+One powerful way to compare groups is with a **boxplot**.  
+This graph shows the distribution of reading minutes for each device type.
+
+```{r boxplot-minutes-device}
+ggplot(survey, aes(x = device, y = minutes_read)) +
+  geom_boxplot() +
+  labs(
+    title = "Minutes Read by Device Type",
+    x = "Device used for reading or homework",
+    y = "Minutes read last night"
+  )
+```
+
+***R Quick Reference***
+
+- `ggplot(survey, aes(x = device, y = minutes_read))` — This line sets up a graph using the the `survey` dataset. The word aes stands for “aesthetics” and tells R which variable goes where: device is placed along the bottom (x-axis), and minutes_read is placed up the side (y-axis).
+
+- `+ geom_boxplot()` — This part of the code tells R to draw the data as boxplots. Each device group gets its own box, which shows how the reading minutes are spread out for that group.
+
+- `+ labs(title = "Minutes Read by Device Type", ...)` — This section controls the labels, or words, that appear on the graph. It sets the main title and the names of the x- and y-axes so that someone looking at the graph can quickly understand what it shows.
+
+***How to read this boxplot***
+
+- Each **box** stands for one device group (phone, tablet, other).  
+- The **horizontal line inside the box** shows the middle value of minutes read (the median) for that group.  
+- The **top and bottom of the box** show where the “middle chunk” of the data sits (most students in that group).  
+- The **whiskers** (the lines that stick out from the box) reach toward the smaller and larger values that are still typical for that group.  
+- When the box and median for one group are higher than for another group, it suggests that group **tends to** read more minutes in this sample.
+
+
+
+
+### Thinking about the boxplot
+
+```{r interpret-boxplot-quiz, echo=FALSE}
+quiz(
+  question(
+    "Looking at the boxplot, which statement is most accurate?",
+    answer(
+      "All three device groups read the exact same amount.",
+      correct = FALSE,
+      message = "The boxplot shows different centers and spreads for each group, so they clearly do not all read the same amount."),
+    answer(
+      "The boxplot proves that using a tablet causes students to read more minutes.",
+      correct = FALSE,
+      message = "The graph comes from an observational survey, so it can show patterns and differences, but it cannot prove what causes those differences."
+    ),
+    answer(
+      "Tablet users everywhere always read more than phone users.",
+      correct = FALSE,
+      message = "This stretches far beyond what the graph can tell us. The boxplot only shows information about these 12 students, not all students everywhere."),
+    answer(
+      "Tablet users tend to read more minutes than phone users in this sample.",
+      correct = TRUE,
+      message = "Yes. This matches what the boxplot shows: in this small sample, the typical tablet user reads more minutes than the typical phone user, without claiming this is true for everyone, everywhere."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+---
+
+## Step 3: Describe the pattern with numbers
+
+In R, we can also calculate the **mean** (average) reading minutes for each device group.
+
+```{r group-means}
+survey %>% 
+  group_by(device) %>% 
+  summarise(
+    mean_minutes = mean(minutes_read),
+    n = n()
+  )
+```
+
+***R Quick Reference***
+
+- `survey %>%` — This part can be read as “take the survey data and then…”. The **%>%** symbol (called a “pipe”) passes the data to the next line. Pipes are helpful when several steps need to be done in order, because they let the code be read from top to bottom like a sentence instead of nesting a lot of functions inside each other.
+
+- `group_by(device)` — This line groups the data by the device column. After this, R treats all phone users as one group, all tablet users as another group, and all “other” devices as a third group.
+
+- `summarise( … )` — This section creates a new, shorter table that stores summary numbers for each group. It does not change the original `survey` dataset; instead, it returns a new summary table with one row per device type.
+
+  - `mean_minutes = mean(minutes_read),` — For each device group, this calculates the **mean** (average) number of minutes read and saves it in a column called mean_minutes.
+
+  - `n = n()` — For each device group, this counts how many students are in that group and saves the count in a column called n.
+
+
+
+```{r means-quiz, echo=FALSE}
+quiz(
+  question(
+    "If the mean minutes for tablet users is larger than for phone users, what does that tell us?",
+    answer(
+      "In this sample, tablet users *on average* read more minutes than phone users.",
+      correct = TRUE,
+      message = "Yes! The mean compares the average in this sample. It does NOT guarantee anything about every individual or all students everywhere."),
+    answer(
+      "Every single tablet user definitely reads more than every phone user.",
+      correct = FALSE,
+      message = "Not quite. A bigger mean does not mean *every* tablet user reads more than *every* phone user. Some phone users could still read a lot."),
+    answer(
+      "There is no variability in the data.",
+      correct = FALSE,
+      message = "You can have different values (variability) and still have one group with a larger mean than another."),
+    answer(
+      "We can say tablet users everywhere read more than phone users at all schools.",
+      correct = FALSE,
+      message = "That’s too big a conclusion. Our mean only tells us about this sample, not every student at every school."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+```
+
+---
+
+## Ethics Micro-Prompt: Who is represented?
+
+Even a nice-looking boxplot can hide important questions:
+
+- Our dataset only has **12 students**.  
+- There are fewer students in the `other` group than in `phone` or `tablet`.
+
+```{r ethics-text, echo=FALSE}
+textAreaInput(
+  "ethics_l3",
+  label = "If a principal used this small dataset to decide which devices to buy for the whole school, what could go wrong? Who might be missing, and how could that affect the decision?",
+  rows = 4,
+  placeholder = "Write 2–4 sentences. Think about sample size, who is (and is not) in the data, and how fair the decision would be."
+)
+```
+
+
+## Exit Ticket
+
+```{r exit-pattern, echo=FALSE}
+textAreaInput(
+  "exit_pattern",
+  label = "Use a full sentence to describe one pattern you see in the boxplot or the group means. Be sure to name the variables and the groups you are comparing.",
+  rows = 3
+)
+```
+
+```{r exit-quiz, echo=FALSE}
+quiz(
+  question(
+    "Pick the sentence that is most careful with our small sample.",
+    answer(
+      "In this sample of 12 students, tablet users *tend* to read more minutes than phone users, but we would need more data to know if this holds for the whole school.",
+      correct = TRUE,
+      message = "Yes. This sentence names the sample size, uses the word 'tend' instead of making an absolute claim, and clearly says we would need more data to make a school-wide conclusion."),
+    answer(
+      "Tablet users always read more minutes than phone users everywhere.",
+      correct = FALSE,
+      message = "This is too strong. Our graph only shows 12 students, so it cannot tell us what happens 'always' or 'everywhere'."),
+    answer(
+      "Phones are bad for reading and should be banned at school.",
+      correct = FALSE,
+      message = "This jumps from a small pattern in one sample to a strong rule for the whole school, and it also blames one group. Careful data stories avoid blaming and stick to what the data can actually show."),
+    allow_retry = TRUE,
+    random_answer_order = TRUE
+  )
+)
+
+

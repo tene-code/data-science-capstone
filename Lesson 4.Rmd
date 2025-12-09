@@ -1,0 +1,284 @@
+---
+title: "Lesson 4 — Interpret and Communicate Results"
+tutorial:
+  id: lesson-4-interpret
+  version: 1.0.1
+output:
+  learnr::tutorial:
+    progressive: true
+    allow_skip: false
+    theme: cerulean
+runtime: shiny_prerendered
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+
+library(learnr)
+library(dplyr)
+library(ggplot2)
+
+# New dataset for Lesson 4: Sleep and devices
+sleep_data <- tibble(
+  student_id = 1:12,
+  grade = rep(7, 12),
+  hours_sleep = c(8.5, 6.0, 7.0, 5.5, 9.0, 6.5, 7.5, 8.0, 5.0, 8.5, 6.0, 7.0),
+  device_bedroom = c(
+    "yes", "yes", "no", "yes",
+    "no", "yes", "no", "no",
+    "yes", "no", "yes", "no"
+  ),
+  sports_team = c(
+    "yes", "no", "yes", "no",
+    "yes", "no", "yes", "no",
+    "no", "yes", "no", "yes"
+  )
+)
+```
+
+## Welcome to Lesson 4 — Interpret & Communicate
+
+You have now:
+
+- Written **investigable questions** (Lesson 1).  
+- Looked closely at a small dataset and its **variability** (Lesson 2).  
+- Made graphs and summaries to see **patterns** (Lesson 3).
+
+In Lesson 4, you will focus on **talking about data**:
+
+- Reading a graph and summary table carefully.  
+- Seeing how a strong data story is built.  
+- Practicing how to write short, honest blurbs about data, including limits and fairness.
+
+
+---
+
+## Meet the new dataset
+
+In this lesson, you will work with a new small dataset about **sleep and devices**.
+
+Each **row** is a seventh-grade student.  
+Each **column** is a variable measured for that student.
+
+```{r show-sleep-data}
+sleep_data
+```
+
+Here is what each column means:
+
+- `student_id` — a number that labels each student in the dataset.  
+- `grade` — the students’ grade level (all are 7 in this sample).  
+- `hours_sleep` — how many hours they slept **last night**, as a number with decimals.  
+- `device_bedroom` — whether they keep a phone, tablet, or computer in their bedroom at night (`"yes"` or `"no"`).  
+- `sports_team` — whether they play on a sports team during the school year (`"yes"` or `"no"`).
+
+This dataset is still small (only 12 students), but it lets you practice reading graphs and communicating clearly.
+
+---
+
+## Step 1: A question and a graph
+
+Suppose your class is curious about this question:
+
+> Do students who keep a device in their bedroom tend to sleep fewer hours than students who do not?
+
+Here is a boxplot that compares **hours of sleep** for the two device groups.
+
+```{r sleep-boxplot}
+ggplot(sleep_data, aes(x = device_bedroom, y = hours_sleep)) +
+  geom_boxplot() +
+  labs(
+    title = "Hours of Sleep by Device-in-Bedroom Status",
+    x = "Device kept in bedroom at night?",
+    y = "Hours of sleep last night"
+  )
+```
+
+***R Quick Reference***
+
+- `ggplot(sleep_data, aes(x = device_bedroom, y = hours_sleep)) + geom_boxplot()` — makes a boxplot that compares the distribution of hours of sleep for students with and without a device in their bedroom.
+
+- You do not need to memorize every detail of this code. The most important part is being able to **read the graph and table** and talk about what they show in a careful way.
+
+***How to read this boxplot***
+
+- Each **box** stands for one group: students who keep a device in their bedroom (`yes`) and those who do not (`no`).  
+- The **line inside the box** shows the middle value of hours slept (the median) for that group.  
+- The **top and bottom of the box** show where the “middle chunk” of the data sits for that group.  
+- The **whiskers** reach toward the smaller and larger sleep values that are still typical for that group.  
+- When the box and median for one group are lower than for another group, it suggests that group **tends to** sleep fewer hours in this sample.
+
+---
+
+## Step 2: A model data story
+
+A good data story uses **evidence**:
+
+- a graph  
+- a number (like a mean)  
+- clear language about the sample and its limits  
+
+First, here is a table of mean hours of sleep for each device group.
+
+```{r sleep-means}
+sleep_data %>% 
+  group_by(device_bedroom) %>% 
+  summarise(
+    mean_sleep = mean(hours_sleep),
+    n = n()
+  )
+```
+
+***R Quick Reference***
+
+- `sleep_data` — the dataset for this lesson, with one row per student and columns for hours of sleep and device-in-bedroom status.  
+
+- `sleep_data %>%` — read as “take the `sleep_data` table and then...”. The `%>%` symbol (pipe) as you may recall helps link steps together so the code can be read from top to bottom.
+
+- `group_by(device_bedroom)` — groups students into two groups based on whether they keep a device in their bedroom (`"yes"` or `"no"`).  
+
+- `summarise(mean_sleep = mean(hours_sleep), n = n())` — creates a small summary table. For each group, it calculates the **mean** hours of sleep and counts how many students are in that group.  
+
+
+Here is one example of a short data story about this graph and table:
+
+> In this sample of 12 seventh graders, students who keep a device in their bedroom tend to sleep fewer hours than students who do not. On average, the "device in bedroom" group slept about 6.3 hours last night, while the "no device in bedroom" group slept about 7.8 hours. This pattern could be important, but the dataset is small and only comes from one class, so we would need more data before making big claims about all students.
+
+### Breaking down the example
+
+- **Question sentence:**  
+  *"In this sample of 12 seventh graders, students who keep a device in their bedroom tend to sleep fewer hours than students who do not."*  
+  This sentence reminds the reader who is in the data (12 seventh graders) and states the main pattern using the words “tend to,” not “always.”
+
+- **Evidence sentence:**  
+  *"On average, the 'device in bedroom' group slept about 6.3 hours last night, while the 'no device in bedroom' group slept about 7.8 hours."*  
+  This uses **numbers** from the summary table to support the pattern in the graph.
+
+- **Limitations sentence:**  
+  *"This pattern could be important, but the dataset is small and only comes from one class, so we would need more data before making big claims about all students."*  
+  This reminds the reader about sample size, who is represented, and that we should be careful about big claims.
+
+---
+
+## Check your understanding: Which part is which?
+
+```{r model-story-quiz, echo=FALSE}
+quiz(
+  question(
+    "Which sentence in the example is doing the job of giving numerical evidence?",
+    answer(
+      "In this sample of 12 seventh graders, students who keep a device in their bedroom tend to sleep fewer hours than students who do not.",
+      correct = FALSE,
+      message = "This sentence states the main pattern and mentions the sample, but it does not use specific numbers."
+    ),
+    answer(
+      "On average, the “device in bedroom” group slept about 6.3 hours last night, while the “no device in bedroom” group slept about 7.8 hours.",
+      correct = TRUE,
+      message = "Yes. This sentence compares the two groups using numbers from the summary table."
+    ),
+    answer(
+      "This pattern could be important, but the dataset is small and only comes from one class, so we would need more data before making big claims about all students.",
+      correct = FALSE,
+      message = "This sentence is about limitations and caution, not numerical evidence."
+    ),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+---
+
+## Step 3: Choose the better blurb
+
+Now you will compare different blurbs and decide which one talks about the data most carefully.
+
+```{r choose-blurb-quiz, echo=FALSE}
+quiz(
+  question(
+    "Which blurb is the most careful and well-supported by the graph and table?",
+    answer(
+      "Students who keep a device in their bedroom always sleep less than students who do not, so schools should ban devices from bedrooms.",
+      correct = FALSE,
+      message = "This blurb is too strong. It says 'always' and jumps straight to a big rule, which is not supported by a small sample of 12 students."
+    ),
+    answer(
+      "In this sample of 12 seventh graders, students with a device in their bedroom tended to sleep fewer hours than students without one, but we would need more data from other classes and schools to know if this pattern holds more widely.",
+      correct = TRUE,
+      message = "Yes. This blurb names the sample, describes the pattern carefully, and reminds the reader that more data would be needed for bigger claims."
+    ),
+    answer(
+      "Some students slept more than others, but the graph does not really tell us anything interesting.",
+      correct = FALSE,
+      message = "The graph and table do show an interesting pattern between device-in-bedroom status and hours of sleep, so this blurb ignores useful information."
+    ),
+    answer(
+      "Students with a device in their bedroom are bad at managing their time and should be blamed if they are tired.",
+      correct = FALSE,
+      message = "This blurb blames a group of students and makes a strong judgment instead of focusing on what the data show. Good data stories avoid blaming people."
+    ),
+    random_answer_order = TRUE,
+    allow_retry = TRUE
+  )
+)
+```
+
+---
+
+## Step 4: Guided writing practice
+
+Use the ideas from the model story to write your own short blurb about the **sleep and devices** data.
+
+Try to:
+
+1. Start with a sentence that mentions the **sample** and the **main pattern**.  
+2. Use at least one **number** from the summary table as evidence.  
+3. End with at least one **limitation or caution**.
+
+```{r guided-story, echo=FALSE}
+textAreaInput(
+  "guided_story",
+  label = "Write 3–5 sentences telling a careful data story about this dataset.",
+  rows = 7,
+  placeholder = "You can use this outline:\n1. In this sample of 12 seventh graders, ...\n2. On average, the ______ group slept about ____ hours, while the ______ group slept about ____ hours.\n3. This pattern could be important, but ..."
+)
+```
+
+---
+
+## Ethics Micro-Prompt: Communicating fairly
+
+How we talk about data can affect real people. Imagine a principal or parent reads your blurb about sleep and devices.
+
+```{r ethics-sleep, echo=FALSE}
+textAreaInput(
+  "ethics_sleep",
+  label = "If an adult used this data story to make rules about devices at home or at school, how could you make sure your story is fair and honest?",
+  rows = 5,
+  placeholder = "Write 3–5 sentences. You might mention sample size, who is in the data, who is missing, and how to avoid blaming certain groups."
+)
+```
+
+## Exit Ticket
+
+Before you leave this lesson, answer these two questions.
+
+1. What is one thing you learned about **interpreting** data?
+
+```{r exit-interpret, echo=FALSE}
+textAreaInput(
+  "exit_interpret",
+  label = "Write 1–2 sentences.",
+  rows = 3
+)
+```
+
+2. What is one thing you learned about **communicating ethically** with data?
+
+```{r exit-ethics, echo=FALSE}
+textAreaInput(
+  "exit_ethics",
+  label = "Write 1–2 sentences.",
+  rows = 3
+)
+```
