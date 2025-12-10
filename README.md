@@ -1,86 +1,147 @@
 # data-science-capstone
 Capstone project for completion of Data Science minor
 
-# R for Everyone: Teaching Data and Coding Literacy Through Interactive R Lessons for Middle School Students
+# R for Everyone: Data Science for Middle Schoolers
 
-Welcome to my Data Science Capstone Project for Fall 2025. This project explores how we can make introductory programming and data science concepts **accessible, ethical, and engaging** for **middle school students (ages 11–14)**.
+Capstone project for completion of the **Data Science minor** (Fall 2025)  
+Pomona College / Claremont Colleges
 
 ---
 
 ## Project Overview
 
-This project builds a series of **interactive, beginner-friendly R lessons** using the `learnr` and/or `bookdown` packages. These lessons are designed to:
-- Introduce coding and data analysis in a visual, intuitive way
-- Use **real-world, fun datasets** (e.g., sports, weather, animals)
-- Integrate **data ethics and justice** topics (privacy, consent, bias)
-- Help students develop confidence, curiosity, and coding literacy
+**R for Everyone** is a four-lesson, interactive micro-curriculum that helps **middle school students (grades 6–8)** build foundational **data literacy** and **ethical reasoning** using R as the engine behind the scenes.
+
+Each lesson is built as a `learnr` tutorial in R and deployed as a **shinyapp**, so teachers and students can access it through a simple web link—no local installation or coding background required.
+
+The curriculum aims to:
+
+- Introduce core ideas in **data, chance, and variability** in an accessible way  
+- Give students practice **asking questions, reading graphs, and telling data stories**  
+- Embed **ethics prompts** about bias, fairness, and representation directly into math tasks  
+- Provide teachers with **plug-and-play lessons** that fit into an existing middle school course
 
 ---
 
-## Project Goals
+## Motivation & Background
 
-Each interactive module will address a specific **Big Idea** from middle school data science education:
+Recent work from **Data Science 4 Everyone (DS4E)** and NAEP highlights a worrying trend:
 
-1. **Formulate a Statistical Investigative Question**
-2. **Collect and Consider the Data**
-3. **Analyze the Data**
-4. **Interpret and Communicate the Results**
+- Between **2019 and 2022**, 8th grade performance on **Data Analysis, Statistics, and Probability** fell significantly on NAEP.  
+- Only a small fraction of high school students take a course that looks like **modern data science**, and access is uneven across districts.
 
-Additionally, the curriculum will introduce key **ethical themes**:
-- We need permission to collect and analyze data about others.
-- Confidentiality matters — how can we maintain it?
-- What is bias? Why is it important to avoid it, especially in data?
+At the same time, students live in a world where data drives newsfeeds, recommendations, policing, health, and finance. This project responds to that gap by designing **short, realistic, ethics-aware data lessons** that can slot into a middle school classroom without requiring teachers to become programmers.
 
 ---
 
-## Advanced Data Science Components
+## Curriculum Structure
 
-This capstone project demonstrates advanced methods through:
-- **Interactive R programming** (`learnr`, `bookdown`, and/or `shiny`)
-- **Data visualization** and live filtering of small real-world datasets
-- **Computational data curation** (scraping, cleaning, simplifying)
-- **User-focused design** to support novice learners
+The four lessons are aligned with the **GAISE II** statistical problem-solving cycle:
+
+> **Ask → Collect → Analyze → Interpret & Communicate**
+
+Each lesson has a specific role:
+
+1. ### Lesson 1 — Ask a Good Question
+   - Distinguish between **opinion questions** and **statistical investigative questions**.  
+   - Sort example questions into “can use data to answer” vs. “cannot.”  
+   - First ethics prompt: *What happens if you only survey your friends? Who is left out?*
+
+2. ### Lesson 2 — Collect & Visualize Data
+   - Work with a small, **simulated classroom survey** on minutes read last night and device used (phone/tablet/laptop/paper).  
+   - Explore the dataset in a simple table and **view plots** of minutes read by device.  
+   - Discuss typical values, variability, and limitations of such a tiny sample.
+
+3. ### Lesson 3 — Analyze Patterns
+   - Reuse the same reading dataset to **compare device groups**.  
+   - Interpret a **boxplot** of minutes read by device type.  
+   - Practice careful language:  
+     > “In this sample, tablet users read more minutes on average than phone users”  
+     versus overstrong claims like “Tablets make kids read more.”
+
+4. ### Lesson 4 — Interpret & Communicate
+   - Introduce a new, **simulated sleep dataset** (hours of sleep, device in bedroom, sports team, etc.).  
+   - Students interpret a **provided graph and summary table** instead of coding from scratch.  
+   - Study a **model data story** that combines:
+     - a graph  
+     - a key number (mean/median)  
+     - a clear statement of limits (“in this sample”)  
+   - Critique over-claiming blurbs and write their **own short data story**.
+
+Across all lessons, students interact by clicking, choosing answers, and typing short responses—**no prior coding** is assumed.
+
+---
+
+## Design Frameworks
+
+The project is grounded in several existing frameworks and resources:
+
+- **GAISE II (ASA, 2020)**  
+  Provides the **Ask → Collect → Analyze → Interpret & Communicate** structure used to organize the four lessons.
+
+- **Data Science 4 Everyone (DS4E)**  
+  Supplies national context (NAEP trends, course-taking patterns) and motivates the push for **modern, technology-supported data experiences** in K–12.
+
+- **Chiodo et al. (2023/2025), “Teaching Resources for Embedding Ethics in Mathematics” (arXiv:2310.08467)**  
+  Informs the decision to embed **short ethics prompts** directly inside everyday math tasks rather than as a separate unit.
+
+- **youcubed “Big Ideas” in Data & Statistics**  
+  Supports the emphasis on **patterns, sense-making, and communication**, especially in Lesson 4’s data storytelling.
+
+---
+
+## Technical Stack
+
+All lessons are built in R and delivered through the following tools:
+
+- [`learnr`](https://rstudio.github.io/learnr/) for interactive tutorials  
+- `shiny` / shinyapps.io for deployment as **web-accessible lessons**  
+- Simulated toy datasets (reading & sleep) created inside the R code
+
+Key design choices:
+
+- **No real student-level data is used.**  
+  All “classroom” datasets are small, simulated tables designed for instructional use.
+
+- **No automatic logging of student responses.**  
+  Quizzes and free-response questions run locally in RStudio or in the web app; logging is disabled in the prototype to avoid storing identifiable data.
+
+- **Teacher-controlled storage (optional).**  
+  If teachers want to keep student work, they can use their own tools (e.g., Google Forms or an LMS) to collect written reflections or screenshots.
 
 ---
 
 ## Repository Contents
 
-- `topic.pdf` – Initial project write-up
-- `README.md` – You’re here!
-- `annotated_bibliography.pdf` — Listing of the sources I used for core framing, implementation, and the datasets that I used
-- `1st outline.pdf` - A tentative outline of the titles of the major sections of my capstone project with a mini narrative explaining what is going to go in each section.
+This repo contains both the **curriculum code** and the **written capstone**. Key items include (names may evolve slightly):
+
+- `Final_Writeup.Rmd` / `Final_Writeup.pdf`  
+  Full written thesis / project report (motivation, design, pedagogy, ethics).
+
+- `Project_Draft.Rmd`  
+  Earlier draft of the write-up.
+
+- `Lesson1_*.Rmd`, `Lesson2_*.Rmd`, `Lesson3_*.Rmd`, `Lesson4_*.Rmd`  
+  Source files for the four `learnr` tutorials.
+
+- `slides/` (if present)  
+  Presentation slides for the final capstone talk.
+
+- `README.md`  
+  You’re here!
 
 ---
 
-## Advisors and Collaboration
+## Running the Lessons Locally
 
-- **Faculty Advisor**: Prof. Jemma Lorenat (Pitzer College)  
-  Expertise: data justice, ethical reasoning, pedagogy  
-- **Capstone Instructor**: Prof. Jo Hardin (Pomona College)  
-  GitHub: [`@hardin47`](https://github.com/hardin47)
+You can run the lessons locally in RStudio as follows:
 
-This repository is under active development throughout Fall 2025.
+```r
+# install packages if needed
+install.packages("learnr")
+install.packages("shiny")
 
----
+# from within this repo directory:
+rmarkdown::run("Lesson1_Ask_Question.Rmd")   # example name
 
-## Timeline (Tentative)
-
-| Week | Milestone |
-|------|-----------|
-| 1–2  | Finalize topic and research ethical frameworks |
-| 3–5  | Build first interactive lesson using `learnr` |
-| 6–7  | Pilot lesson, collect feedback (if possible) |
-| 8–9  | Build second lesson (game theory or bias module) |
-| 10–11 | Polish visuals, write-up, and README |
-| 12–14 | Final report + presentation submitted |
-
----
-
-## License & Credits
-
-This curriculum is for educational use only.  
-Inspired by:  
-- **YouCubed**, Jo Boaler's work on data science in schools  
-- NSF-funded middle school data literacy frameworks  
-- Class discussions from *Data Justice Past and Future*
 
