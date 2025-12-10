@@ -132,16 +132,43 @@ This repo contains both the **curriculum code** and the **written capstone**. Ke
 
 ---
 
-## Running the Lessons Locally
+## Advisors and Acknowledgements
 
-You can run the lessons locally in RStudio as follows:
+**Faculty Advisor:** Prof. Jemma Lorenat (Pitzer College)  
 
-```r
-# install packages if needed
-install.packages("learnr")
-install.packages("shiny")
+**Capstone Instructor:** Prof. Jo Hardin (Pomona College), GitHub: [@hardin47](https://github.com/hardin47)
 
-# from within this repo directory:
-rmarkdown::run("Lesson1_Ask_Question.Rmd")   # example name
+This project was also informed by:
+
+- Data Science 4 Everyone (DS4E) policy briefs and reports  
+- The GAISE II report (American Statistical Association)  
+- youcubed’s data & statistics resources  
+- Chiodo et al.’s ethics-in-math teaching materials  
+
+---
+
+## Status and Future Work
+
+**Status:** Core curriculum + written report completed in Fall 2025.
+
+**Next steps:**
+
+- Pilot the lessons with middle school teachers  
+- Collect structured feedback using a short validation rubric and survey  
+- Iterate on timing, contexts, and teacher supports based on classroom use  
+
+---
+
+## License & Credits
+
+This curriculum is intended for **educational use only**.  
+Feel free to adapt the ideas and code for your own classroom, with attribution.
+
+Inspired by:
+
+- youcubed and Jo Boaler’s work on data science in schools  
+- NAEP and DS4E analyses of student performance and course access  
+- Chiodo et al.’s work on embedding ethics in mathematics
+
 
 
